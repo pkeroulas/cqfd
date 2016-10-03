@@ -160,7 +160,11 @@ make_archive() {
 		BUILD_ID="`date --rfc-3339='date'`"
 	fi
 
-	release_package=${JOB_NAME}_${BUILD_ID}.tar.xz
+	if [ -z "$BUILD_SIGNATURE" ]; then
+		BUILD_SIGNATURE=`git rev-parse --short HEAD`
+	fi
+
+	release_package=${JOB_NAME}_${BUILD_ID}_${BUILD_SIGNATURE}.tar.xz
 	XZ_OPT=-9 tar --transform "s/.*\///g" -cJf \
 		$release_package $release_files
 }
